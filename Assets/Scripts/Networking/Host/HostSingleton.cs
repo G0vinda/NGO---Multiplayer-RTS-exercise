@@ -7,7 +7,7 @@ public class HostSingleton : MonoBehaviour
 {
     public static HostSingleton Instance;
 
-    private HostGameManager gameManager;
+    public HostGameManager GameManager { get; private set; }
 
     private void Awake()
     {
@@ -22,13 +22,8 @@ public class HostSingleton : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        
-    }
-
     public void CreateHost()
     {
-        gameManager = new HostGameManager();
+        GameManager = new HostGameManager();
     }
 }
