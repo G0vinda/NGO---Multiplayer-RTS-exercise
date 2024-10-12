@@ -54,6 +54,8 @@ public class NetworkServer : IDisposable
 
         response.Approved = true;
         response.CreatePlayerObject = true;
+        response.Position = SpawnPoint.GetRandomSpawnPos();
+        response.Rotation = Quaternion.identity;
     }
     
     private void OnNetworkReady()
