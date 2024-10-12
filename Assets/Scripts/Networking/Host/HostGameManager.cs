@@ -13,7 +13,7 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class HostGameManager : MonoBehaviour
+public class HostGameManager : IDisposable
 {
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
@@ -22,6 +22,27 @@ public class HostGameManager : MonoBehaviour
     private Allocation _allocation;
     private string _joinCode;
     private string _lobbyId;
+    
+    public async void Dispose()
+    {
+        HostSingleton.Instance.StopCoroutine(nameof(HeartbeatLobby));
+
+        if (!string.IsNullOrEmpty(_lobbyId))
+        {
+            try
+            {
+                await Lobbies.Instance.DeleteLobbyAsync(_lobbyId);
+            }
+            catch (LobbyServiceException e)
+            {
+                Debug.Log(e);
+            }
+
+            _lobbyId = string.Empty;
+        }
+        
+        _networkServer?.Dispose();   
+    }
 
     public async Task StartHostAsync()
     {

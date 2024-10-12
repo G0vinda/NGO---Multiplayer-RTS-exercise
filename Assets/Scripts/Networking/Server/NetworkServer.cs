@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class NetworkServer
+public class NetworkServer : IDisposable
 {
     private NetworkManager _networkManager;
     private Dictionary<ulong, string> _authIdsByClientIds = new();
@@ -15,6 +16,19 @@ public class NetworkServer
 
         _networkManager.ConnectionApprovalCallback += ApprovalCheck;
         _networkManager.OnServerStarted += OnNetworkReady;
+    }
+    
+    public void Dispose()
+    {
+        if (_networkManager != null)
+        {
+            _networkManager.ConnectionApprovalCallback -= ApprovalCheck;
+            _networkManager.OnServerStarted -= OnNetworkReady;
+            _networkManager.OnClientDisconnectCallback -= OnClientDisconnect;
+            
+            if(_networkManager.IsListening)
+                _networkManager.Shutdown();
+        }
     }
 
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)

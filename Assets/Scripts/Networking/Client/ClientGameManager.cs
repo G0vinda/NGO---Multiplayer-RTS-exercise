@@ -12,7 +12,7 @@ using Unity.Services.Relay.Models;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ClientGameManager : MonoBehaviour
+public class ClientGameManager : IDisposable
 {
     private const string menuSceneName = "Menu";
     
@@ -68,5 +68,10 @@ public class ClientGameManager : MonoBehaviour
         NetworkManager.Singleton.NetworkConfig.ConnectionData = payloadBytes;
         
         NetworkManager.Singleton.StartClient();
+    }
+    
+    public void Dispose()
+    {
+        _networkClient?.Dispose();
     }
 }
