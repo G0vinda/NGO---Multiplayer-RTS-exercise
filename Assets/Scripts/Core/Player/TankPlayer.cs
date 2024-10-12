@@ -10,6 +10,7 @@ public class TankPlayer : NetworkBehaviour
 {
     [SerializeField] CinemachineVirtualCamera tankVirtualCamera;
     [field: SerializeField] public Health Health {get; private set;}
+    [field: SerializeField] public CoinWallet Wallet {get; private set;}
 
     public NetworkVariable<FixedString32Bytes> PlayerName = new();
 

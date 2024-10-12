@@ -797,6 +797,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tankVirtualCamera: {fileID: 4211459074946923466}
   <Health>k__BackingField: {fileID: 30835930305045422}
+  <Wallet>k__BackingField: {fileID: 574243175977047229}
   PlayerName:
     m_InternalValue:
       utf8LengthInBytes: 0

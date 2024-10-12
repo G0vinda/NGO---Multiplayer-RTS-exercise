@@ -12,7 +12,7 @@ public class RespawnHandler : NetworkBehaviour
         if(!IsServer)
             return;
         
-        var players = FindObjectsOfType<TankPlayer>();
+        var players = FindObjectsByType<TankPlayer>(FindObjectsSortMode.None);
         foreach (var player in players)
         {
             HandlePlayerSpawned(player);
