@@ -31,6 +31,19 @@ public class NetworkServer : IDisposable
         }
     }
 
+    public PlayerData GetPlayerDataByClientId(ulong clientId)
+    {
+        if (_authIdsByClientIds.TryGetValue(clientId, out var authId))
+        {
+            if (_playersByAuthIds.TryGetValue(authId, out var playerData))
+            {
+                return playerData;
+            }
+        }
+
+        return null;
+    }
+
     private void ApprovalCheck(NetworkManager.ConnectionApprovalRequest request, NetworkManager.ConnectionApprovalResponse response)
     {
         var payload = System.Text.Encoding.UTF8.GetString(request.Payload);

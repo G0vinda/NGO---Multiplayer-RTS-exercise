@@ -15,10 +15,11 @@ using UnityEngine.SceneManagement;
 
 public class HostGameManager : IDisposable
 {
+    public NetworkServer NetworkServer { get; private set; }
+    
     private const int MaxConnections = 20;
     private const string GameSceneName = "Game";
-
-    private NetworkServer _networkServer;
+    
     private Allocation _allocation;
     private string _joinCode;
     private string _lobbyId;
@@ -41,7 +42,7 @@ public class HostGameManager : IDisposable
             _lobbyId = string.Empty;
         }
         
-        _networkServer?.Dispose();   
+        NetworkServer?.Dispose();   
     }
 
     public async Task StartHostAsync()
@@ -96,7 +97,7 @@ public class HostGameManager : IDisposable
             throw;
         }
 
-        _networkServer = new NetworkServer(NetworkManager.Singleton);
+        NetworkServer = new NetworkServer(NetworkManager.Singleton);
 
         var playerData = new PlayerData()
         {
