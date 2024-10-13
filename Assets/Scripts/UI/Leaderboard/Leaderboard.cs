@@ -9,6 +9,7 @@ public class Leaderboard : NetworkBehaviour
 {
     [SerializeField] private Transform leaderboardEntityHolder;
     [SerializeField] private LeaderboardEntityDisplay leaderboardEntityPrefab;
+    [SerializeField] private int entitiesToDisplay = 8;
     
     private NetworkList<LeaderboardEntityState> _leaderboardEntities;
     private List<LeaderboardEntityDisplay> _leaderboardEntityDisplays = new();
@@ -99,6 +100,26 @@ public class Leaderboard : NetworkBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+        
+        _leaderboardEntityDisplays.Sort((e1, e2) => e2.PlayerCoins.CompareTo(e1.PlayerCoins));
+        for (var i = 0; i < _leaderboardEntityDisplays.Count; i++)
+        {
+            _leaderboardEntityDisplays[i].transform.SetSiblingIndex(i);
+            _leaderboardEntityDisplays[i].UpdateText();
+            
+            var shouldShow = i < entitiesToDisplay;
+            _leaderboardEntityDisplays[i].gameObject.SetActive(shouldShow);
+        }
+
+        var playerDisplay = _leaderboardEntityDisplays.FirstOrDefault(entity => entity.ClientId == NetworkManager.Singleton.LocalClientId);
+        if (playerDisplay != null)
+        {
+            if (playerDisplay.transform.GetSiblingIndex() >= entitiesToDisplay)
+            {
+                leaderboardEntityHolder.GetChild(entitiesToDisplay - 1).gameObject.SetActive(false);
+                playerDisplay.gameObject.SetActive(true);
+            }
+        }
     }
 
     private void HandlePlayerSpawn(TankPlayer player)
@@ -120,7 +141,7 @@ public class Leaderboard : NetworkBehaviour
         
         foreach (var entity in _leaderboardEntities)
         {
-            if (entity.ClientId != player.OwnerClientId)
+            if (entity.ClientId == player.OwnerClientId)
             {
                 _leaderboardEntities.Remove(entity);
                 break;
